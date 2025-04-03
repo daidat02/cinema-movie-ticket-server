@@ -1,5 +1,5 @@
 import { generateID } from "../configs/constants.js";
-import { bookTicketMovieService } from "../services/paymentService.js";
+import { bookTicketMovieService, createPaymentUrlVNPayService, vnPayRetrunService } from "../services/paymentService.js";
 
 const bookTicketMovie = async (req, res) => {
     const { showtimeId, seats } = req.body
@@ -16,4 +16,26 @@ const bookTicketMovie = async (req, res) => {
   }  
 };
 
-export { bookTicketMovie };
+const createPaymentUrlVNPay =  async(req, res) => { 
+  const { ticketId } = req.query;
+  const ip =req.ip;
+  try {
+    const result = await createPaymentUrlVNPayService(ticketId,ip);
+    res.status(result.code).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+const vnPayRetrun = async (req, res) => { 
+  const vnp_Params = req.query;
+  try {
+    const result = await vnPayRetrunService(vnp_Params);
+    res.status(result.code).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+
+  }
+}
+
+export { bookTicketMovie ,createPaymentUrlVNPay , vnPayRetrun};

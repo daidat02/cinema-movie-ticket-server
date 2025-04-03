@@ -26,10 +26,15 @@ const TicketSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["booked", "paid"],
+        enum: ["booked", "paid", "failed"],
         default:"booked"
     },
-    bookedAt: { type: Date, default: Date.now }, // Ngày đặt vé
+    bookedAt: { type: Date, default: Date.now },
+    
+    paymentTime: {
+        type: Date,
+        default: null
+    }// Ngày đặt vé
 });
 
 const Ticket = model('Ticket', TicketSchema);

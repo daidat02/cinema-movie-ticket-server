@@ -1,5 +1,5 @@
-import { model, Schema } from "mongoose";
-
+import { model, Schema, Types } from "mongoose";
+const ObjectId = Types.ObjectId
 const UserSchema = new Schema({
     id: {
         type: String,
@@ -37,7 +37,11 @@ const UserSchema = new Schema({
         type: Number,
         required: true,
         default: 0
-    }
+    },
+    moviesFavourite: [{
+        type: ObjectId,
+        ref:'Movie'
+    }]
 });
 
 const User = model('User', UserSchema);

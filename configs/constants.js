@@ -5,6 +5,8 @@ const API_PATH = {
     // movie/
     GET_MOVIE: '/',
     CREATE_MOVIE: '/create',
+    UPDATE_MOVIE_FAVOURITE: '/update-movie-favourite/:movieId',
+    GET_MOVIES_FAVOURITE:'/add-movie-favourite/',
 
 
     //cinema/
@@ -23,7 +25,8 @@ const API_PATH = {
     // payment/
 
     BOOK_TICKET:'/book-ticket',
-
+    CREATE_URL_VNP: '/create-url-vnp',
+    VNP_RETURN:'/vnp-return',
     // ticket/ 
     GET_TICKETS:'/:userId'
 }
@@ -31,6 +34,14 @@ const API_PATH = {
 const DB_SCHEMA = {
     MOVIE: 'Movie',
 }
+
+
+const CONFIG_VNPAY = {
+    tmnCode: process.env.VNP_TMNCODE,
+    hashSecret: process.env.VNP_HASHSECRET_KEY,
+    url: process.env.VNP_URL,
+    returnUrl: process.env.VNP_RETURN_URL,
+};
 
 const generateID = (length) => {
     let id = '';
@@ -42,5 +53,5 @@ const generateID = (length) => {
 }
 
 
-export { API_PATH, DB_SCHEMA ,generateID};
+export { API_PATH, DB_SCHEMA ,generateID,CONFIG_VNPAY};
 
