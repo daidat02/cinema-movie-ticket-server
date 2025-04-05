@@ -4,7 +4,7 @@ const ObjectId = Types.ObjectId
 const getTicketByUserIdService = async (userId) => {
     const now = new Date(); // Lấy thời gian hiện tại
 
-    const tickets = await DB_CONNECTION.Ticket.find({ user: new ObjectId(userId) }).populate([
+    const tickets = await DB_CONNECTION.Ticket.find({ user: new ObjectId(userId), status:'paid' }).populate([
         {
             path: "showtime",
             match: { startTime: { $gt: now } }, // Chỉ lấy suất chiếu chưa bắt đầu
