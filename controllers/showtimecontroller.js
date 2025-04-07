@@ -1,5 +1,5 @@
 import DB_CONNECTION from "../model/DBConnection.js";
-import { createShowtimeService, getDetailShowtimeService, getUpShowtimeByMoiveAndDateService } from "../services/showtimeService.js";
+import { createShowtimeService, getDetailShowtimeService, getUpShowtimeByCinemaAndDateService, getUpShowtimeByMoiveAndDateService } from "../services/showtimeService.js";
 
 const createShowtime = async (req, res) => {
     const { movieId, cinemaId, startTime, roomId } = req.body;
@@ -31,7 +31,24 @@ const getUpShowtimeByMoiveAndDate = async (req, res) => {
     }
 }
 
+const getUpShowtimeByCinemaAndDate = async (req, res) => { 
+    const { cinemaId, date } = req.params
+    try {
+        const cinema = await DB_CONNECTION.Cinema.findOne({ _id: cinemaId });
+        if (!cinema) {
+            return res.status(404).json({
+                message: 'không tìm thấy rạp',
+                success:false
+            })
+        }
+        const result = await getUpShowtimeByCinemaAndDateService(cinemaId, date);
+        return res.status(result.code).json(result);
 
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+        
+    }
+}
 const getDetailShowtime = async (req, res) => {
     const{showtimeId}= req.params
     try {
@@ -42,4 +59,9 @@ const getDetailShowtime = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 }
-export { createShowtime,getUpShowtimeByMoiveAndDate,getDetailShowtime };
+export {
+    createShowtime,
+    getUpShowtimeByMoiveAndDate,
+    getDetailShowtime,
+    getUpShowtimeByCinemaAndDate
+};

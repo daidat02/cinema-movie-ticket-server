@@ -3,12 +3,18 @@ import DB_CONNECTION from "../model/DBConnection.js";
 const ObjectId = Types.ObjectId
 const createShowtimeService = async (movieId, cinemaId, startTime, roomId, ticketPrice) => {
     try {
+        const room = await DB_CONNECTION.Room.findById(new ObjectId(roomId));
+        if (!room) {
+            return { code: 404, message: "Room not found" };
+        }
+
         const newShowtime = new DB_CONNECTION.Showtime({
             movie: movieId,
             cinema: cinemaId,
             startTime,
             room: roomId,
             ticketPrice,
+            seatNumbers: room.seats.length,
         });
         await newShowtime.save();
         return { code: 200, message: "Showtime created successfully", showtime: newShowtime };
@@ -57,6 +63,13 @@ const getUpShowtimeByMoiveAndDateService = async (movieId, date) => {
             },
             { $unwind: "$cinema" },
             {
+                $addFields: {
+                    availableSeats: {
+                        $subtract: ["$seatNumbers", { $size: "$bookedSeats" }]
+                    }
+                }
+            },
+            {
                 $group: {
                     _id: "$cinema._id",
                     cinemaName: { $first: "$cinema.name" },
@@ -64,7 +77,8 @@ const getUpShowtimeByMoiveAndDateService = async (movieId, date) => {
                         $push: {
                             _id: "$_id",
                             startTime: "$startTime",
-                            ticketPrice:"$ticketPrice"
+                            seatNumbers: "$seatNumbers",
+                            availableSeats: "$availableSeats"
                         }
                     }
                 }
@@ -79,6 +93,73 @@ const getUpShowtimeByMoiveAndDateService = async (movieId, date) => {
    } catch (error) {
         return { code: 500, message: error.message };
    }
+}
+
+const getUpShowtimeByCinemaAndDateService = async (cinemaId, date) => { 
+
+    let startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    let endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const now = new Date();
+    if (startOfDay <= now && now <= endOfDay) {
+        startOfDay = now;
+    }
+    const showtimes = await DB_CONNECTION.Showtime.aggregate([
+        {
+            $match: {
+                cinema: new ObjectId(cinemaId),
+                startTime: {
+                    $gte: startOfDay,  
+                    $lte: endOfDay
+                }
+            },
+        },
+        {
+            $sort:{startTime:1}
+        },
+        {
+            $lookup: {
+                from: "movies",
+                localField: "movie",
+                foreignField: "_id",
+                as: "movie"
+            }
+        },
+        { $unwind: "$movie" },
+        {
+            $addFields: {
+                availableSeats: {
+                    $subtract: ["$seatNumbers", { $size: "$bookedSeats" }]
+                }
+            }
+        },
+        {
+            $group: {
+                _id: "$movie._id",
+                movieName: { $first: "$movie.title" },
+                movieImage: { $first: "$movie.imageUrl" },
+                movieDuration: { $first: "$movie.duration" },
+                movieGenre: { $first: "$movie.genre" },
+                showtimes: {
+                    $push: {
+                        _id: "$_id",
+                        startTime: "$startTime",
+                        seatNumbers: "$seatNumbers",
+                        availableSeats: "$availableSeats"
+                    }
+                }
+            }
+        }
+    ]);
+    return {
+        success:true,
+        data: showtimes,
+        code:200
+    };
+  
 }
 
 const getDetailShowtimeService = async (showtimeId) => {
@@ -101,8 +182,10 @@ const getDetailShowtimeService = async (showtimeId) => {
     }
 }
 
+
 export {
     createShowtimeService,
     getUpShowtimeByMoiveAndDateService,
-    getDetailShowtimeService
+    getDetailShowtimeService,
+    getUpShowtimeByCinemaAndDateService
  };

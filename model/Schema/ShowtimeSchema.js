@@ -25,6 +25,10 @@ const ShowtimeSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    seatNumbers: {
+        type: Number,
+        required: true,
+    },
     bookedSeats: [{
         type: ObjectId,
         ref: 'Seat',

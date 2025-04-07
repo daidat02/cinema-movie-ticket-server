@@ -16,6 +16,7 @@ const API_PATH = {
     //showtimes/
     CREATE_SHOWTIME: '/create',
     GET_SHOWTIMES_BY_MOVIE: '/movie/:movieId/:date',
+    GET_SHOWTIMES_BY_CINEMA: '/cinema/:cinemaId/:date',
     GET_DETAIL_SHOWTIME:'/room/:showtimeId',
     
     //room/
