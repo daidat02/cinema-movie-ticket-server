@@ -1,7 +1,8 @@
 const API_PATH = {
     //auth/
     REGISTER: '/register',
-    LOGIN:'/login',
+    LOGIN: '/login',
+    GET_USER:'/user/',
     // movie/
     GET_MOVIE: '/',
     CREATE_MOVIE: '/create',
