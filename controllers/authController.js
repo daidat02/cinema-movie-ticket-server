@@ -28,7 +28,10 @@ const getDetailUser = async (req, res) => {
     const user = req.user;
     try {
         const result = await DB_CONNECTION.User.findById(new ObjectId(user._id));
-        res.status(200).json(result);
+        res.status(200).json({
+            data: result,
+            code: 200,
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
