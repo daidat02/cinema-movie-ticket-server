@@ -11,7 +11,7 @@ const API_PATH = {
 
     //cinema/
     CREATE_CINEMA: '/create',
-
+    GET_CINEMAS: '/',
 
     //showtimes/
     CREATE_SHOWTIME: '/create',

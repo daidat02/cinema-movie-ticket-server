@@ -10,5 +10,13 @@ const createCinemaService = async (id, name, location) => {
     }
 }
 
+const getCinemasService = async () => { 
+    try {
+        const cinemas = await DB_CONNECTION.Cinema.find();
+        return { code: 200, cinemas };
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
 
-export{createCinemaService};
+export{createCinemaService,getCinemasService};
