@@ -184,11 +184,11 @@ const vnPayRetrunService = async (vnp_Params) => {
                 }
            ).populate('user');
             
-            await DB_CONNECTION.User.findOneAndUpdate({ _id: ticket.user._id },
-                {
-                    $inc: { ticketsBooked: ticketsBooked++}
-                }
-            );
+           await DB_CONNECTION.User.findOneAndUpdate(
+            { _id: ticket.user._id },
+            { $inc: { ticketsBooked: 1 } },
+            { new: true } // nếu muốn nhận bản ghi sau khi update
+          );
 
             const showtime = await DB_CONNECTION.Showtime.findOne({_id: ticket.showtime})
             showtime.bookedSeats.push(...ticket.seats);
