@@ -182,7 +182,14 @@ const vnPayRetrunService = async (vnp_Params) => {
                     paymentTime: new Date(),
                     updated_at: new Date()
                 }
+           ).populate('user');
+            
+            await DB_CONNECTION.User.findOneAndUpdate({ _id: ticket.user._id },
+                {
+                    $inc: { ticketsBooked: ticketsBooked++}
+                }
             );
+
             const showtime = await DB_CONNECTION.Showtime.findOne({_id: ticket.showtime})
             showtime.bookedSeats.push(...ticket.seats);
             await showtime.save();
