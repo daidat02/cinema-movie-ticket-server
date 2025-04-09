@@ -191,10 +191,10 @@ const vnPayRetrunService = async (vnp_Params) => {
                        { path: "cinema", select: "name" }, 
                        { path: "room", select: "name" }
                    ],
-                   path:"seats" , select: "seatNumber"
-               }
+               },
+               {path:"seats" , select: "seatNumber"}
            ]);
-            
+          
             await DB_CONNECTION.User.findOneAndUpdate(
             { _id: ticket.user },
             { $inc: { ticketsBooked: 1 } },
