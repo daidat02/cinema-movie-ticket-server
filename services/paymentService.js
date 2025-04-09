@@ -184,7 +184,6 @@ const vnPayRetrunService = async (vnp_Params) => {
                     updated_at: new Date()
                 }
            ).populate([
-               { path: "user" },
                {
                    path: "showtime",
                    populate: [
@@ -196,7 +195,7 @@ const vnPayRetrunService = async (vnp_Params) => {
            ]);
             
             await DB_CONNECTION.User.findOneAndUpdate(
-            { _id: ticket.user._id },
+            { _id: ticket.user },
             { $inc: { ticketsBooked: 1 } },
             { new: true } // nếu muốn nhận bản ghi sau khi update
           );
