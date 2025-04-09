@@ -190,7 +190,8 @@ const vnPayRetrunService = async (vnp_Params) => {
                        { path: "movie" }, 
                        { path: "cinema", select: "name" }, 
                        { path: "room", select: "name" }
-                   ]
+                   ],
+                   path:"seats" , select: "seatNumber"
                }
            ]);
             
