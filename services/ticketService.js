@@ -28,7 +28,28 @@ const getTicketByUserIdService = async (userId) => {
         code:200
     }
 }
+const getDetailTicketService = async (ticketId) => { 
+    const ticket = await DB_CONNECTION.Ticket.findById(new ObjectId(ticketId)).populate([
+        {
+            path: "showtime",
+            populate: [
+                { path: "movie" }, 
+                { path: "cinema", select: "name" }, 
+                { path: "room", select: "name" }
+            ]
+        },
+        {path:"seats" , select: "seatNumber"}
+    ]);
+
+    return {
+        data: ticket,
+        success: true,
+        message: 'lấy dữ liệu thành công',
+        code:200
+    }
+}
 
 export {
-    getTicketByUserIdService
+    getTicketByUserIdService,
+    getDetailTicketService
 }

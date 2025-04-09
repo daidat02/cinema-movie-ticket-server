@@ -4,6 +4,7 @@ import querystring from "querystring";
 import DB_CONNECTION from "../model/DBConnection.js";
 import { generateID } from "../configs/constants.js";
 import dotenv from 'dotenv';
+import path from "path";
 
 dotenv.config();
 const ObjectId = Types.ObjectId
@@ -182,9 +183,19 @@ const vnPayRetrunService = async (vnp_Params) => {
                     paymentTime: new Date(),
                     updated_at: new Date()
                 }
-           ).populate('user');
+           ).populate([
+               { path: "user" },
+               {
+                   path: "showtime",
+                   populate: [
+                       { path: "movie" }, 
+                       { path: "cinema", select: "name" }, 
+                       { path: "room", select: "name" }
+                   ]
+               }
+           ]);
             
-           await DB_CONNECTION.User.findOneAndUpdate(
+            await DB_CONNECTION.User.findOneAndUpdate(
             { _id: ticket.user._id },
             { $inc: { ticketsBooked: 1 } },
             { new: true } // nếu muốn nhận bản ghi sau khi update
@@ -198,7 +209,7 @@ const vnPayRetrunService = async (vnp_Params) => {
                 message: "Thanh Toán Thành Công",
                 code:200,
                 data: {
-                    ticketId:ticket._id,
+                    ticket:ticket,
                     amount: vnp_Params['vnp_Amount'] / 100,
                     transactionNo: vnp_Params['vnp_TransactionNo'],
                     bankCode: vnp_Params['vnp_BankCode'],
