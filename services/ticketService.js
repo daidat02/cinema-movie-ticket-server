@@ -30,7 +30,8 @@ const getTicketByUserIdService = async (userId) => {
 }
 const getDetailTicketService = async (ticketId) => { 
     const ticket = await DB_CONNECTION.Ticket.findById(new ObjectId(ticketId)).populate([
-        {
+        {path : 'user'},
+        {   
             path: "showtime",
             populate: [
                 { path: "movie" }, 
