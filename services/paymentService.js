@@ -184,7 +184,6 @@ const vnPayRetrunService = async (vnp_Params) => {
                     updated_at: new Date()
                 }
            ).populate([
-               {path:'user'},
                {    
                 
                    path: "showtime",
